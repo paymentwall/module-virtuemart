@@ -1,0 +1,3 @@
+[submodule "src/paymentwall_api"]
+	path = src/paymentwall_api
+	url = git@github.com:paymentwall/paymentwall-php.git
