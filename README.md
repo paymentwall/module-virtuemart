@@ -1,5 +1,5 @@
 #About VirtueMart module
-This VirtueMart module allow receive payments from your customers.
+This Paymentwall module for VirtueMart allows VirtueMart shop owners to integrate Paymentwall with a few clicks and accept payments from all over the world.
 
 ###Versions
 Tested on VirtueMart v2.6.8 and Joomla! 2.5.*
