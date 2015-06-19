@@ -15,19 +15,24 @@
     <folder>paymentwall_api</folder>
     <folder>language</folder>
   </files>
-  <params addpath="/plugins/vmpayment/paymentwall/paymentwall_api" />
-  <params>
-    <param type="spacer" default="VMPAYMENT_PAYMENTWALL" level="level1" />
-    <param name="app_key" type="text" size="50" default="" label="VMPAYMENT_PAYMENTWALL_APP_KEY" description="VMPAYMENT_PAYMENTWALL_APP_KEY_DESC"/>
-    <param name="secret_key" type="text" size="50" default="" label="VMPAYMENT_PAYMENTWALL_SECRET_KEY" description="VMPAYMENT_PAYMENTWALL_SECRET_KEY_DESC"/>
-    <param name="widget_code" type="text" size="50" default="" label="VMPAYMENT_PAYMENTWALL_WIDGET_CODE" description="VMPAYMENT_PAYMENTWALL_WIDGET_CODE_DESC"/>
-    <param name="currency_code" type="text" size="50" default="" label="VMPAYMENT_PAYMENTWALL_CURRENCY_CODE" description="VMPAYMENT_PAYMENTWALL_CURRENCY_CODE_DESC"/>
-    <param name="test_mode" type="radio" scope="com_virtuemart" default="0"
-               label="VMPAYMENT_PAYMENTWALL_TEST_MODE"
-               description="VMPAYMENT_PAYMENTWALL_TEST_MODE_DESC">
-              <option value="0">COM_VIRTUEMART_NO</option>
-              <option value="1">COM_VIRTUEMART_YES</option>
-    </param>
-  </params>
-
+  <vmconfig>
+        <fields name="params">
+            <fieldset name="payment" addfieldpath="/administrator/components/com_virtuemart/fields">
+                <field name="app_key" type="text" size="50" label="VMPAYMENT_PAYMENTWALL_APP_KEY"
+                       description="VMPAYMENT_PAYMENTWALL_APP_KEY_DESC"/>
+                <field name="secret_key" type="text" size="50" label="VMPAYMENT_PAYMENTWALL_SECRET_KEY"
+                       description="VMPAYMENT_PAYMENTWALL_SECRET_KEY_DESC"/>
+                <field name="widget_code" type="text" size="50" label="VMPAYMENT_PAYMENTWALL_WIDGET_CODE"
+                       description="VMPAYMENT_PAYMENTWALL_WIDGET_CODE_DESC"/>
+                <field name="currency_code" type="text" size="50" label="VMPAYMENT_PAYMENTWALL_CURRENCY_CODE"
+                       description="VMPAYMENT_PAYMENTWALL_CURRENCY_CODE_DESC"/>
+                <field name="test_mode" type="radio" scope="com_virtuemart" default="0"
+                       label="VMPAYMENT_PAYMENTWALL_TEST_MODE"
+                       description="VMPAYMENT_PAYMENTWALL_TEST_MODE_DESC">
+                    <option value="0">COM_VIRTUEMART_NO</option>
+                    <option value="1">COM_VIRTUEMART_YES</option>
+                </field>
+            </fieldset>
+        </fields>
+    </vmconfig>
 </extension>
