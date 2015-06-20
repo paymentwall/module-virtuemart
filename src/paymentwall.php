@@ -1,14 +1,5 @@
 <?php
 
-/**
- * @author Paymentwall Inc.
- * @version 1.0.0
- * @package VirtueMart
- * @subpackage payment
- * @copyright Copyright (C) 2010-2014 Paymentwall Inc.
- * @license The MIT License (MIT)
- */
-
 defined('_JEXEC') or die('Restricted access');
 
 if (!class_exists('vmPSPlugin')) {
@@ -62,7 +53,12 @@ class plgVmpaymentPaymentwall extends vmPSPlugin
    */
   function plgVmOnStoreInstallPaymentPluginTable ($jplugin_id)
   {
-    return $this->onStoreInstallPaymentPluginTable($jplugin_id);
+      if(!defined('VM_VERSION') or VM_VERSION < 3){
+          // for older vm version
+          return $this->onStoreInstallPaymentPluginTable($jplugin_id);
+      }else{
+          return $this->onStoreInstallPluginTable($jplugin_id);
+      }
   }
 
   /**
@@ -225,6 +221,15 @@ class plgVmpaymentPaymentwall extends vmPSPlugin
   {
     return $this->setOnTablePluginParams($name, $id, $table);
   }
+
+    /**
+     * Addition triggers for VM3
+     * @param $data
+     * @return bool
+     */
+    function plgVmDeclarePluginParamsPaymentVM3(&$data) {
+        return $this->declarePluginParams('payment', $data);
+    }
 
   /**
    * This method is fired when showing when priting an Order
