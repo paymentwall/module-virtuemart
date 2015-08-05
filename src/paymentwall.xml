@@ -5,14 +5,14 @@
   <author>Paymentwall Inc.</author>
   <authorUrl>https://www.paymentwall.com</authorUrl>
   <authorEmail>devsupport@paymentwall.com</authorEmail>
-  <copyright>Copyright (C) 2010-2014 Paymentwall Inc. All rights reserved.</copyright>
+  <copyright>Copyright (C) 2010-2015 Paymentwall Inc. All rights reserved.</copyright>
   <license>The MIT License (MIT)</license>
-  <version>1.0.0</version>
+  <version>1.0.1</version>
   <description><![CDATA[<a href="https://paymentwall.com" target="_blank">Paymentwall</a> best payment gateway. ]]></description>
   <files>
     <filename plugin="paymentwall">paymentwall.php</filename>
     <filename>pingback.php</filename>
-    <folder>paymentwall_api</folder>
+    <folder>paymentwall-php</folder>
     <folder>language</folder>
   </files>
   <vmconfig>
@@ -24,11 +24,17 @@
                        description="VMPAYMENT_PAYMENTWALL_SECRET_KEY_DESC"/>
                 <field name="widget_code" type="text" size="50" label="VMPAYMENT_PAYMENTWALL_WIDGET_CODE"
                        description="VMPAYMENT_PAYMENTWALL_WIDGET_CODE_DESC"/>
-                <field name="currency_code" type="text" size="50" label="VMPAYMENT_PAYMENTWALL_CURRENCY_CODE"
-                       description="VMPAYMENT_PAYMENTWALL_CURRENCY_CODE_DESC"/>
+                <field name="success_url" type="text" size="50" label="VMPAYMENT_PAYMENTWALL_SUCCESS_URL"
+                       description="VMPAYMENT_PAYMENTWALL_SUCCESS_URL_DESC"/>
                 <field name="test_mode" type="radio" scope="com_virtuemart" default="0"
                        label="VMPAYMENT_PAYMENTWALL_TEST_MODE"
                        description="VMPAYMENT_PAYMENTWALL_TEST_MODE_DESC">
+                    <option value="0">COM_VIRTUEMART_NO</option>
+                    <option value="1">COM_VIRTUEMART_YES</option>
+                </field>
+                <field name="delivery" type="radio" scope="com_virtuemart" default="1"
+                       label="VMPAYMENT_PAYMENTWALL_DELIVERY"
+                       description="VMPAYMENT_PAYMENTWALL_DELIVERY_DESC">
                     <option value="0">COM_VIRTUEMART_NO</option>
                     <option value="1">COM_VIRTUEMART_YES</option>
                 </field>
