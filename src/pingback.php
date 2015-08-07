@@ -72,7 +72,7 @@ if ($pingback->validate()) {
     );
 
     if ($pingback->isDeliverable()) {
-        $paymentwallPlugin->callDeliveryConfirmationApi($order);
+        $paymentwallPlugin->callDeliveryConfirmationApi($order, $pingback->getReferenceId());
         $orderUpd['order_status'] = VM_ORDER_STATUS_CONFIRMED;
     } else if ($pingback->isCancelable()) {
         $orderUpd['order_status'] = VM_ORDER_STATUS_REFUNDED;
