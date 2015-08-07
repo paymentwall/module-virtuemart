@@ -328,7 +328,7 @@ class plgVmpaymentPaymentwall extends vmPSPlugin
      * @param $order
      * @return array
      */
-    private function getDeliveryData($order, $isTest)
+    private function getDeliveryData($order, $isTest, $ref)
     {
         $shipping = false;
         if(isset($order['details']['ST'])){
@@ -340,7 +340,7 @@ class plgVmpaymentPaymentwall extends vmPSPlugin
         }
 
         return array(
-            'payment_id' => $shipping->virtuemart_paymentmethod_id,
+            'payment_id' => $ref,
             'type' => 'digital',
             'status' => 'delivered',
             'estimated_delivery_datetime' => date('Y/m/d H:i:s'),
@@ -361,12 +361,12 @@ class plgVmpaymentPaymentwall extends vmPSPlugin
         );
     }
 
-    public function callDeliveryConfirmationApi($order)
+    public function callDeliveryConfirmationApi($order, $ref)
     {
         // initPaymentwallConfigs loaded the configs before,
         // no need pass payment id
         $configs = $this->getPaymentConfigs();
-        $shippingData = $this->getDeliveryData($order, $configs['test_mode']);
+        $shippingData = $this->getDeliveryData($order, $configs['test_mode'], $ref);
 
         if ($configs && $configs['delivery'] && $shippingData) {
             // Delivery Confirmation
