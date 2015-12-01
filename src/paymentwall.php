@@ -28,7 +28,7 @@ class plgVmpaymentPaymentwall extends vmPSPlugin
             'secret_key' => array('', 'char'),
             'widget_code' => array('', 'char'),
             'success_url' => array('', 'char'),
-            'test_mode' => array('', int)
+            'test_mode' => array('', 'int')
         );
         $this->setConfigParameterable($this->_configTableFieldName, $varsToPush);
     }
@@ -40,12 +40,18 @@ class plgVmpaymentPaymentwall extends vmPSPlugin
 
     function getTableSQLFields()
     {
-        $sqlFields = array(
-            'id' => 'int(1) UNSIGNED NOT NULL AUTO_INCREMENT',
+         $sqlFields = array(
+            'id' => 'int(11) UNSIGNED NOT NULL AUTO_INCREMENT',
+            'virtuemart_order_id' => 'int(11) UNSIGNED',
             'order_number' => 'char(64)',
             'virtuemart_paymentmethod_id' => 'mediumint(1) UNSIGNED',
-            'payment_name' => 'varchar(5000)',
-            'payment_currency' => 'char(3)',
+            'payment_name' => 'varchar(2000)',
+            'payment_order_total' => 'decimal(15,5) NOT NULL',
+            'payment_currency' => 'smallint(1)',
+            'email_currency' => 'smallint(1)',
+            'cost_per_transaction' => 'decimal(10,2)',
+            'cost_percent_total' => 'decimal(10,2)',
+            'tax_id' => 'smallint(1)',
         );
 
         return $sqlFields;
@@ -83,21 +89,26 @@ class plgVmpaymentPaymentwall extends vmPSPlugin
      */
     function plgVmConfirmedOrder($cart, $order)
     {
-        if (!($method = $this->getVmPluginMethod($order['details']['BT']->virtuemart_paymentmethod_id))) {
+        if (!($this->_currentMethod = $this->getVmPluginMethod($order['details']['BT']->virtuemart_paymentmethod_id))) {
             return NULL; // Another method was selected, do nothing
         }
 
-        if (!$this->selectedThisElement($method->payment_element)) {
+        if (!$this->selectedThisElement($this->_currentMethod->payment_element)) {
             return FALSE;
         }
 
         VmConfig::loadJLang('com_virtuemart', true);
 
+        // Prepare data that should be stored in the database
+        $transaction_data = $this->prepareTransactionData($order, $cart);
+        $this->storePSPluginInternalData($transaction_data);
+
+        $uid = $order['details']['BT']->virtuemart_user_id != 0 ? $order['details']['BT']->customer_number : $_SERVER['REMOTE_ADDR'];
         $this->initPaymentwallConfigs($order['details']['BT']->virtuemart_paymentmethod_id);
 
         $widget = new Paymentwall_Widget(
-            $order['details']['BT']->email,                         // id of the end-user who's making the payment
-            $method->widget_code,                                   // widget code, e.g. p1; can be picked inside of your merchant account
+            $uid,                         // id of the end-user who's making the payment
+            $this->_currentMethod->widget_code,                                   // widget code, e.g. p1; can be picked inside of your merchant account
             array(                                                  // product details for Flexible Widget Call. To let users select the product on Paymentwall's end, leave this array empty
                 new Paymentwall_Product(
                     $order['details']['BT']->virtuemart_order_id,       // id of the product in your system
@@ -110,10 +121,10 @@ class plgVmpaymentPaymentwall extends vmPSPlugin
             array_merge(
                 array(
                     'email' => $order['details']['BT']->email,
-                    'test_mode' => $method->test_mode,
+                    'test_mode' => $this->_currentMethod->test_mode,
                     'integration_module' => 'virtuemart',
-                    'success_url' => (trim($method->test_mode) != '')
-                        ? trim($method->success_url)
+                    'success_url' => (trim($this->_currentMethod->test_mode) != '')
+                        ? trim($this->_currentMethod->success_url)
                         : JURI::base() . 'index.php?option=com_virtuemart&amp;view=orders&amp;layout=details&amp;order_number=' . $order['details']['BT']->order_number . '&amp;order_pass=' . $order['details']['BT']->order_pass
                 ),
                 $this->getUserProfileData($order['details']['BT'])
@@ -331,11 +342,11 @@ class plgVmpaymentPaymentwall extends vmPSPlugin
     private function getDeliveryData($order, $isTest, $ref)
     {
         $shipping = false;
-        if(isset($order['details']['ST'])){
+        if (isset($order['details']['ST'])) {
             $shipping = $order['details']['ST'];
-        }elseif(isset($order['details']['BT'])){
+        } elseif (isset($order['details']['BT'])) {
             $shipping = $order['details']['BT'];
-        }else{
+        } else {
             return array();
         }
 
@@ -361,6 +372,10 @@ class plgVmpaymentPaymentwall extends vmPSPlugin
         );
     }
 
+    /**
+     * @param $order
+     * @param $ref
+     */
     public function callDeliveryConfirmationApi($order, $ref)
     {
         // initPaymentwallConfigs loaded the configs before,
@@ -373,6 +388,29 @@ class plgVmpaymentPaymentwall extends vmPSPlugin
             $delivery = new Paymentwall_GenerericApiObject('delivery');
             $response = $delivery->post($shippingData);
         }
+    }
+
+    /**
+     * Extends the standard function in vmplugin. Extendst the input data by virtuemart_order_id
+     * Calls the parent to execute the write operation
+     *
+     * @param $values
+     * @param int $primaryKey
+     * @param bool $preload
+     * @return array
+     * @internal param array $_values
+     * @internal param string $_table
+     */
+    protected function storePSPluginInternalData($values, $primaryKey = 0, $preload = FALSE) 
+    {
+
+        if (!class_exists('VirtueMartModelOrders')) {
+            require(VMPATH_ADMIN . DS . 'models' . DS . 'orders.php');
+        }
+        if (!isset($values['virtuemart_order_id'])) {
+            $values['virtuemart_order_id'] = VirtueMartModelOrders::getOrderIdByOrderNumber($values['order_number']);
+        }
+        return $this->storePluginInternalData($values, $primaryKey, 0, $preload);
     }
 
 }
