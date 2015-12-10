@@ -51,8 +51,9 @@ $dispatcher = JDispatcher::getInstance();
 /**
  * Process Pingback request
  */
+$pingback = new Paymentwall_Pingback($_GET, $_SERVER['REMOTE_ADDR']);
 $modelOrder = new VirtueMartModelOrders();
-$order = $modelOrder->getOrder($_GET['goodsid']);
+$order = $modelOrder->getOrder($pingback->getProductId());
 
 if (!$order) {
     die('Order invalid');
@@ -61,7 +62,6 @@ if (!$order) {
 $paymentwallPlugin = new plgVmpaymentPaymentwall($dispatcher, array('type' => 'vmpayment', 'name' => 'paymentwall'));
 $paymentwallPlugin->initPaymentwallConfigs($order['details']['BT']->virtuemart_paymentmethod_id);
 
-$pingback = new Paymentwall_Pingback($_GET, $_SERVER['REMOTE_ADDR']);
 if ($pingback->validate()) {
 
     $productId = $pingback->getProduct()->getId();

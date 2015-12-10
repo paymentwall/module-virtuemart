@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <extension version="2.5" type="plugin" group="vmpayment" method="install">
   <name>Paymentwall</name>
-  <creationDate>July 18 2014</creationDate>
+  <creationDate>December 01 2015</creationDate>
   <author>Paymentwall Inc.</author>
   <authorUrl>https://www.paymentwall.com</authorUrl>
   <authorEmail>devsupport@paymentwall.com</authorEmail>
   <copyright>Copyright (C) 2010-2015 Paymentwall Inc. All rights reserved.</copyright>
   <license>The MIT License (MIT)</license>
-  <version>1.0.1</version>
+  <version>1.1.0</version>
   <description><![CDATA[<a href="https://paymentwall.com" target="_blank">Paymentwall</a> best payment gateway. ]]></description>
   <files>
     <filename plugin="paymentwall">paymentwall.php</filename>
