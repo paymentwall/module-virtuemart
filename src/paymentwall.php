@@ -46,12 +46,13 @@ class plgVmpaymentPaymentwall extends vmPSPlugin
             'order_number' => 'char(64)',
             'virtuemart_paymentmethod_id' => 'mediumint(1) UNSIGNED',
             'payment_name' => 'varchar(2000)',
-            'payment_order_total' => 'decimal(15,5) NOT NULL',
-            'payment_currency' => 'smallint(1)',
-            'email_currency' => 'smallint(1)',
+            'payment_order_total' => 'decimal(15,5) NOT NULL DEFAULT \'0.00000\'',
+            'payment_currency' => 'char(3)',
+            'email_currency' => 'char(3)',
             'cost_per_transaction' => 'decimal(10,2)',
+            'cost_min_transaction' => 'decimal(10,2)',
             'cost_percent_total' => 'decimal(10,2)',
-            'tax_id' => 'smallint(1)',
+            'tax_id' => 'smallint(1)'
         );
 
         return $sqlFields;
@@ -411,6 +412,25 @@ class plgVmpaymentPaymentwall extends vmPSPlugin
             $values['virtuemart_order_id'] = VirtueMartModelOrders::getOrderIdByOrderNumber($values['order_number']);
         }
         return $this->storePluginInternalData($values, $primaryKey, 0, $preload);
+    }
+
+    /**
+     * @param $order
+     * @param $cart
+     * @return array
+     */
+    public function prepareTransactionData($order, $cart) {
+        // Prepare data that should be stored in the database
+        return array(
+            'order_number' => $order['details']['BT']->order_number,
+            'payment_name' => $this->_currentMethod->payment_name,
+            'virtuemart_paymentmethod_id' => $cart->virtuemart_paymentmethod_id,
+            'cost_per_transaction' => $this->_currentMethod->cost_per_transaction,
+            'cost_percent_total' => $this->_currentMethod->cost_percent_total,
+            'payment_currency' => $this->_currentMethod->payment_currency,
+            'payment_order_total' => $order['details']['BT']->order_total,
+            'tax_id' => $this->_currentMethod->tax_id,
+        );
     }
 
 }
