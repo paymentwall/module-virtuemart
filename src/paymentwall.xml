@@ -7,7 +7,7 @@
   <authorEmail>devsupport@paymentwall.com</authorEmail>
   <copyright>Copyright (C) 2010-2015 Paymentwall Inc. All rights reserved.</copyright>
   <license>The MIT License (MIT)</license>
-  <version>1.1.0</version>
+  <version>1.0.3</version>
   <description><![CDATA[<a href="https://paymentwall.com" target="_blank">Paymentwall</a> best payment gateway. ]]></description>
   <files>
     <filename plugin="paymentwall">paymentwall.php</filename>
